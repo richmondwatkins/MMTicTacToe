@@ -81,11 +81,11 @@
 		5D2E85A319DDFE8900DD9D9D /* TicTacToe */ = {
 			isa = PBXGroup;
 			children = (
+				5D2E85AE19DDFE8900DD9D9D /* Main.storyboard */,
 				5D2E85A819DDFE8900DD9D9D /* AppDelegate.h */,
 				5D2E85A919DDFE8900DD9D9D /* AppDelegate.m */,
 				5D2E85AB19DDFE8900DD9D9D /* ViewController.h */,
 				5D2E85AC19DDFE8900DD9D9D /* ViewController.m */,
-				5D2E85AE19DDFE8900DD9D9D /* Main.storyboard */,
 				5D2E85B119DDFE8900DD9D9D /* Images.xcassets */,
 				5D2E85B319DDFE8900DD9D9D /* LaunchScreen.xib */,
 				5D2E85A419DDFE8900DD9D9D /* Supporting Files */,
