@@ -26,7 +26,7 @@
 @property int timeAmount;
 @property NSTimer *gameTimer;
 @property CGPoint gamePieceOriginalCenter;
-
+@property NSArray *columnsAndRows;
 
 @end
 
@@ -41,7 +41,19 @@
 
     self.allLabels = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, self.labelFour, self.labelFive, self.labelSix, self.labelSeven, self.labelEight, self.labelNine, nil];
 
+    NSArray *rowOne = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, nil];
+    NSArray *rowTwo = [NSArray arrayWithObjects:self.labelFour, self.labelFive, self.labelSix, nil];
+    NSArray *rowThree = [NSArray arrayWithObjects:self.labelSeven, self.labelEight, self.labelNine, nil];
+    NSArray *columnOne = [NSArray arrayWithObjects:self.labelOne, self.labelFour, self.labelSeven, nil];
+    NSArray *columnTwo = [NSArray arrayWithObjects:self.labelTwo, self.labelFive, self.labelEight, nil];
+    NSArray *columnThree = [NSArray arrayWithObjects:self.labelThree, self.labelSix, self.labelNine, nil];
+    NSArray *diagonalLeft = [NSArray arrayWithObjects:self.labelOne, self.labelFive, self.labelNine, nil];
+    NSArray *diagonalRight = [NSArray arrayWithObjects:self.labelThree, self.labelFive, self.labelSeven, nil];
+
+    self.columnsAndRows = [NSArray arrayWithObjects:rowOne, rowTwo, rowThree, columnOne, columnTwo, columnThree, diagonalLeft, diagonalRight,  nil];
+
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
+    
     //    [self setTimer];
 }
 
@@ -113,31 +125,42 @@
     [alertView addButtonWithTitle:@"Play Again!"];
 
     NSString *lMove = [NSString stringWithFormat:@"%@", self.lastMove];
-    if ([self.labelOne.text isEqualToString:lMove] && [self.labelTwo.text isEqualToString:lMove] && [self.labelThree.text isEqualToString:lMove]) {
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFour.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelTwo.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelFour.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
-    }else if([self.labelSeven.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
-        [alertView show];
-        [self resetBoard];
+
+    for (NSArray *colOrRow in self.columnsAndRows) {
+            UILabel *temp1 = colOrRow[0];
+            UILabel *temp2 = colOrRow[1];
+            UILabel *temp3 = colOrRow[2];
+        if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
+            [alertView show];
+            [self resetBoard];
+        }
     }
+
+//    if ([self.labelOne.text isEqualToString:lMove] && [self.labelTwo.text isEqualToString:lMove] && [self.labelThree.text isEqualToString:lMove]) {
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFour.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelTwo.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelFour.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }else if([self.labelSeven.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
+//        [alertView show];
+//        [self resetBoard];
+//    }
 
     return nil;
 }
