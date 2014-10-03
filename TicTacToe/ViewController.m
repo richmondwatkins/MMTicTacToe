@@ -189,4 +189,8 @@
     self.whichPlayerLabel.textColor = [UIColor blueColor];
 }
 
+-(IBAction) unwindFromSegue:(UIStoryboardSegue *)segue{
+
+}
+
 @end
