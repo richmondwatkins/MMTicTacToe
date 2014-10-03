@@ -22,6 +22,12 @@
 @property NSString *lastMove;
 @property NSArray *labelFrames;
 @property NSArray *allLabels;
+@property (strong, nonatomic) IBOutlet UILabel *timerLabel;
+@property int timeAmount;
+@property NSTimer *gameTimer;
+@property CGPoint gamePieceOriginalCenter;
+
+
 @end
 
 @implementation ViewController
@@ -31,9 +37,23 @@
     self.whichPlayerLabel.text = @"X";
     self.whichPlayerLabel.textColor = [UIColor blueColor];
 
-    self.labelFrames =  [NSArray arrayWithObjects: NSStringFromCGRect([self.labelOne frame]), NSStringFromCGRect([self.labelTwo frame]), NSStringFromCGRect([self.labelThree frame]), NSStringFromCGRect([self.labelFour frame]), NSStringFromCGRect([self.labelFive frame]), NSStringFromCGRect([self.labelSix frame]), NSStringFromCGRect([self.labelSeven frame]), NSStringFromCGRect([self.labelEight frame]), NSStringFromCGRect([self.labelNine frame]), nil];
+    self.labelFrames =  [NSArray arrayWithObjects: NSStringFromCGRect(self.labelOne.frame), NSStringFromCGRect(self.labelTwo.frame), NSStringFromCGRect([self.labelThree frame]), NSStringFromCGRect(self.labelFour.frame), NSStringFromCGRect(self.labelFive.frame), NSStringFromCGRect(self.labelSix.frame), NSStringFromCGRect(self.labelSeven.frame), NSStringFromCGRect(self.labelEight.frame), NSStringFromCGRect(self.labelNine.frame), nil];
 
     self.allLabels = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, self.labelFour, self.labelFive, self.labelSix, self.labelSeven, self.labelEight, self.labelNine, nil];
+
+    self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
+    //    [self setTimer];
+}
+
+
+-(void)setTimer{
+    self.timeAmount = 10;
+    self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runTimer:) userInfo:nil repeats:YES];
+}
+
+-(void)runTimer:(NSTimer *)timer{
+    self.timeAmount -= 1;
+    self.timerLabel.text = [NSString stringWithFormat:@"%i", self.timeAmount];
 }
 
 - (IBAction)onLabelTapped:(UITapGestureRecognizer *)userTap {
@@ -49,6 +69,7 @@
    [self whoWon];
 
 }
+
 - (IBAction)dragGamePiece:(UIPanGestureRecognizer *)panGesture {
     CGPoint point = [panGesture locationInView:self.view];
 
@@ -61,6 +82,11 @@
                 validMove.text = self.whichPlayerLabel.text;
                 [self nextMove:validMove];
                 [self whoWon];
+//                [self setTimer];
+            }else{
+                [UIView animateWithDuration:1.0 animations:^{
+                    self.whichPlayerLabel.center = self.gamePieceOriginalCenter;
+                }];
             }
         }
     }
