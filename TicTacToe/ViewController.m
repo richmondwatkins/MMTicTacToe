@@ -136,32 +136,6 @@
         }
     }
 
-//    if ([self.labelOne.text isEqualToString:lMove] && [self.labelTwo.text isEqualToString:lMove] && [self.labelThree.text isEqualToString:lMove]) {
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFour.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelTwo.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelFour.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }else if([self.labelSeven.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
-//        [alertView show];
-//        [self resetBoard];
-//    }
-
     return nil;
 }
 
