@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *labelOne;
 @property (strong, nonatomic) IBOutlet UILabel *labelTwo;
 @property (strong, nonatomic) IBOutlet UILabel *labelThree;
@@ -19,6 +19,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *labelEight;
 @property (strong, nonatomic) IBOutlet UILabel *labelNine;
 @property (strong, nonatomic) IBOutlet UILabel *whichPlayerLabel;
+@property NSString *lastMove;
 
 @end
 
@@ -37,25 +38,23 @@
 
     UILabel *tapInLabel = [self findLabelUsingPoint:point];
 
-    NSLog(@"================");
-    NSLog(@"%@", tapInLabel);
-    NSLog(@"================");
-
-    if([self.whichPlayerLabel.text isEqualToString:@"X"]){
-        tapInLabel.text = @"X";
-        self.whichPlayerLabel.text = @"Y";
-    }else{
-        tapInLabel.text = @"Y";
-        self.whichPlayerLabel.text = @"X";
+    if (tapInLabel) {
+        if([self.whichPlayerLabel.text isEqualToString:@"X"]){
+            tapInLabel.text = @"X";
+            tapInLabel.textColor = [UIColor blueColor];
+            self.lastMove = @"X";
+            self.whichPlayerLabel.text = @"O";
+            self.whichPlayerLabel.textColor = [UIColor redColor];
+        }else{
+            tapInLabel.text = @"O";
+            tapInLabel.textColor = [UIColor redColor];
+            self.lastMove = @"O";
+            self.whichPlayerLabel.text = @"X";
+            self.whichPlayerLabel.textColor = [UIColor blueColor];
+        }
     }
 
-
-
-//    NSLog(@"%@", NSStringFromCGPoint(point));
-//    NSLog(@"THE FRAME");
-//    NSLog(@"%@", NSStringFromCGRect([self.labelOne frame]));
-//    NSLog(@"ARRAY");
-//    NSLog(@"%@", labelFrames);
+   [self whoWon];
 
 }
 
@@ -64,12 +63,6 @@
     NSArray *labelFrames = [NSArray arrayWithObjects: NSStringFromCGRect([self.labelOne frame]), NSStringFromCGRect([self.labelTwo frame]), NSStringFromCGRect([self.labelThree frame]), NSStringFromCGRect([self.labelFour frame]), NSStringFromCGRect([self.labelFive frame]), NSStringFromCGRect([self.labelSix frame]), NSStringFromCGRect([self.labelSeven frame]), NSStringFromCGRect([self.labelEight frame]), NSStringFromCGRect([self.labelNine frame]), nil];
 
     NSArray *allLabels = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, self.labelFour, self.labelFive, self.labelSix, self.labelSeven, self.labelEight, self.labelNine, nil];
-
-//    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-//    [dictionary setObject:@"String value" forKey:@"stringKey"];
-//    [dictionary setObject:[NSNumber numberWithInt:25] forKey:@"numberKey"];
-//    [dictionary setObject:array forKey:@"arrayKey"];
-
 
     for (NSString *cgRect in labelFrames){
         if(CGRectContainsPoint(CGRectFromString(cgRect), point)){
@@ -80,10 +73,58 @@
             }
         }
     }
+    return nil;
+}
 
+-(NSString *)whoWon{
+    UIAlertView *alertView = [[UIAlertView alloc]init];
+    alertView.delegate = self;
+    alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", self.lastMove];
+    [alertView addButtonWithTitle:@"Play Again!"];
+
+    NSString *lMove = [NSString stringWithFormat:@"%@", self.lastMove];
+    if ([self.labelOne.text isEqualToString:lMove] && [self.labelTwo.text isEqualToString:lMove] && [self.labelThree.text isEqualToString:lMove]) {
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFour.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelTwo.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelOne.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelThree.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSeven.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelFour.text isEqualToString:lMove] && [self.labelFive.text isEqualToString:lMove] && [self.labelSix.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }else if([self.labelSeven.text isEqualToString:lMove] && [self.labelEight.text isEqualToString:lMove] && [self.labelNine.text isEqualToString:lMove]){
+        [alertView show];
+        [self resetBoard];
+    }
 
     return nil;
 }
 
+-(void)resetBoard{
+    self.labelOne.text = @"";
+    self.labelTwo.text = @"";
+    self.labelThree.text = @"";
+    self.labelFour.text = @"";
+    self.labelFive.text = @"";
+    self.labelSix.text = @"";
+    self.labelSeven.text = @"";
+    self.labelEight.text = @"";
+    self.labelNine.text = @"";
+
+    self.whichPlayerLabel.text = @"X";
+    self.whichPlayerLabel.textColor = [UIColor blueColor];
+}
 
 @end
