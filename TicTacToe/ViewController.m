@@ -20,7 +20,8 @@
 @property (strong, nonatomic) IBOutlet UILabel *labelNine;
 @property (strong, nonatomic) IBOutlet UILabel *whichPlayerLabel;
 @property NSString *lastMove;
-
+@property NSArray *labelFrames;
+@property NSArray *allLabels;
 @end
 
 @implementation ViewController
@@ -30,6 +31,9 @@
     self.whichPlayerLabel.text = @"X";
     self.whichPlayerLabel.textColor = [UIColor blueColor];
 
+    self.labelFrames =  [NSArray arrayWithObjects: NSStringFromCGRect([self.labelOne frame]), NSStringFromCGRect([self.labelTwo frame]), NSStringFromCGRect([self.labelThree frame]), NSStringFromCGRect([self.labelFour frame]), NSStringFromCGRect([self.labelFive frame]), NSStringFromCGRect([self.labelSix frame]), NSStringFromCGRect([self.labelSeven frame]), NSStringFromCGRect([self.labelEight frame]), NSStringFromCGRect([self.labelNine frame]), nil];
+
+    self.allLabels = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, self.labelFour, self.labelFive, self.labelSix, self.labelSeven, self.labelEight, self.labelNine, nil];
 }
 
 - (IBAction)onLabelTapped:(UITapGestureRecognizer *)userTap {
@@ -39,34 +43,34 @@
     UILabel *tapInLabel = [self findLabelUsingPoint:point];
 
     if (tapInLabel) {
-        if([self.whichPlayerLabel.text isEqualToString:@"X"]){
-            tapInLabel.text = @"X";
-            tapInLabel.textColor = [UIColor blueColor];
-            self.lastMove = @"X";
-            self.whichPlayerLabel.text = @"O";
-            self.whichPlayerLabel.textColor = [UIColor redColor];
-        }else{
-            tapInLabel.text = @"O";
-            tapInLabel.textColor = [UIColor redColor];
-            self.lastMove = @"O";
-            self.whichPlayerLabel.text = @"X";
-            self.whichPlayerLabel.textColor = [UIColor blueColor];
-        }
+        [self nextMove:tapInLabel];
     }
 
    [self whoWon];
 
 }
+- (IBAction)dragGamePiece:(UIPanGestureRecognizer *)panGesture {
+    CGPoint point = [panGesture locationInView:self.view];
+
+    if(CGRectContainsPoint([self.whichPlayerLabel frame], point)){
+        self.whichPlayerLabel.center = point;
+
+        if (panGesture.state == UIGestureRecognizerStateEnded) {
+           UILabel *validMove =  [self checkForValidMove:point];
+            if (validMove) {
+                validMove.text = self.whichPlayerLabel.text;
+                [self nextMove:validMove];
+                [self whoWon];
+            }
+        }
+    }
+}
 
 
 -(UILabel *)findLabelUsingPoint: (CGPoint)point{
-    NSArray *labelFrames = [NSArray arrayWithObjects: NSStringFromCGRect([self.labelOne frame]), NSStringFromCGRect([self.labelTwo frame]), NSStringFromCGRect([self.labelThree frame]), NSStringFromCGRect([self.labelFour frame]), NSStringFromCGRect([self.labelFive frame]), NSStringFromCGRect([self.labelSix frame]), NSStringFromCGRect([self.labelSeven frame]), NSStringFromCGRect([self.labelEight frame]), NSStringFromCGRect([self.labelNine frame]), nil];
-
-    NSArray *allLabels = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, self.labelFour, self.labelFive, self.labelSix, self.labelSeven, self.labelEight, self.labelNine, nil];
-
-    for (NSString *cgRect in labelFrames){
+    for (NSString *cgRect in self.labelFrames){
         if(CGRectContainsPoint(CGRectFromString(cgRect), point)){
-            for (UILabel *label in allLabels) {
+            for (UILabel *label in self.allLabels) {
                 if(CGRectEqualToRect([label frame], CGRectFromString(cgRect))){
                     return label;
                 }
@@ -111,6 +115,38 @@
 
     return nil;
 }
+
+-(void)nextMove:(UILabel *)movedToLabel{
+    if([self.whichPlayerLabel.text isEqualToString:@"X"]){
+        movedToLabel.text = @"X";
+        movedToLabel.textColor = [UIColor blueColor];
+        self.lastMove = @"X";
+        self.whichPlayerLabel.text = @"O";
+        self.whichPlayerLabel.textColor = [UIColor redColor];
+    }else{
+        movedToLabel.text = @"O";
+        movedToLabel.textColor = [UIColor redColor];
+        self.lastMove = @"O";
+        self.whichPlayerLabel.text = @"X";
+        self.whichPlayerLabel.textColor = [UIColor blueColor];
+    }
+
+}
+
+-(UILabel *)checkForValidMove:(CGPoint)labelPosition{
+    for (NSString *cgRect in self.labelFrames){
+        if(CGRectContainsPoint(CGRectFromString(cgRect), labelPosition)){
+            for (UILabel *label in self.allLabels) {
+                if(CGRectEqualToRect([label frame], CGRectFromString(cgRect))){
+                    return label;
+                }
+            }
+        }
+    }
+
+    return nil;
+}
+
 
 -(void)resetBoard{
     self.labelOne.text = @"";
