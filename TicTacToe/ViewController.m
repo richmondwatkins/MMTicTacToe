@@ -27,12 +27,14 @@
 @property NSTimer *gameTimer;
 @property CGPoint gamePieceOriginalCenter;
 @property NSArray *columnsAndRows;
+@property UILabel *humanMove;
 
 @end
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     self.whichPlayerLabel.text = @"X";
     self.whichPlayerLabel.textColor = [UIColor blueColor];
@@ -58,13 +60,15 @@
 }
 
 
--(void)setTimer{
+-(void)setTimer
+{
     self.timeAmount = 10;
     self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(runTimer:) userInfo:nil repeats:YES];
 }
 
--(void)runTimer:(NSTimer *)timer{
-    if (self.timeAmount == 0) {
+-(void)runTimer:(NSTimer *)timer
+{
+    if (self.timeAmount == 0){
         if ([self.whichPlayerLabel.text isEqualToString:@"X"]) {
             self.whichPlayerLabel.text = @"O";
         }else{
@@ -79,7 +83,8 @@
     self.timeAmount -= 1;
 }
 
-- (IBAction)onLabelTapped:(UITapGestureRecognizer *)userTap {
+- (IBAction)onLabelTapped:(UITapGestureRecognizer *)userTap
+{
 
     CGPoint point = [userTap locationInView:self.view];
 
@@ -93,7 +98,8 @@
 
 }
 
-- (IBAction)dragGamePiece:(UIPanGestureRecognizer *)panGesture {
+- (IBAction)dragGamePiece:(UIPanGestureRecognizer *)panGesture
+{
     CGPoint point = [panGesture translationInView:self.view];
 
     self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(point.x, point.y);
@@ -102,6 +108,7 @@
        UILabel *validMove =  [self checkForValidMove:[panGesture locationInView:self.view] ];
         if (validMove) {
             validMove.text = self.whichPlayerLabel.text;
+            self.humanMove = validMove;
             [self nextMove:validMove];
             [self whoWon];
             [self.gameTimer invalidate];
@@ -111,13 +118,15 @@
     }
 }
 
--(void)resetGamePiece{
+-(void)resetGamePiece
+{
     [UIView animateWithDuration:1.0 animations:^{
         self.whichPlayerLabel.transform = CGAffineTransformIdentity;
     }];
 }
 
--(UILabel *)findLabelUsingPoint: (CGPoint)point{
+-(UILabel *)findLabelUsingPoint: (CGPoint)point
+{
     for (NSString *cgRect in self.labelFrames){
         if(CGRectContainsPoint(CGRectFromString(cgRect), point)){
             for (UILabel *label in self.allLabels) {
@@ -130,7 +139,8 @@
     return nil;
 }
 
--(NSString *)whoWon{
+-(NSString *)whoWon
+{
     UIAlertView *alertView = [[UIAlertView alloc]init];
     alertView.delegate = self;
     alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", self.lastMove];
@@ -151,13 +161,15 @@
     return nil;
 }
 
--(void)nextMove:(UILabel *)movedToLabel{
+-(void)nextMove:(UILabel *)movedToLabel
+{
     if([self.whichPlayerLabel.text isEqualToString:@"X"]){
         movedToLabel.text = @"X";
         movedToLabel.textColor = [UIColor blueColor];
         self.lastMove = @"X";
         self.whichPlayerLabel.text = @"O";
         self.whichPlayerLabel.textColor = [UIColor redColor];
+        [self computerMove];
     }else{
         movedToLabel.text = @"O";
         movedToLabel.textColor = [UIColor redColor];
@@ -168,7 +180,8 @@
 
 }
 
--(UILabel *)checkForValidMove:(CGPoint)labelPosition{
+-(UILabel *)checkForValidMove:(CGPoint)labelPosition
+{
     for (NSString *cgRect in self.labelFrames){
         if(CGRectContainsPoint(CGRectFromString(cgRect), labelPosition)){
             for (UILabel *label in self.allLabels) {
@@ -182,7 +195,61 @@
     return nil;
 }
 
--(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+-(void)computerMove
+{
+    NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
+
+    NSArray *allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+
+    NSLog(@"%@", allEmptyPossMoves);
+    
+//    NSMutableArray *emptyLabels = [[NSMutableArray alloc] init];
+//    for (UILabel *emptyLabel in columnOrRowOfLastMove) {
+//        if(!(CGRectEqualToRect(emptyLabel.frame, self.humanMove.frame))){
+//            [emptyLabels addObject:emptyLabel];
+//        }
+//    }
+//
+//        UILabel *computersMove = emptyLabels[0];
+//        computersMove.text = @"O";
+//        [self nextMove:computersMove];
+//        [self whoWon];
+//        [self.gameTimer invalidate];
+//        [self setTimer];
+
+}
+
+-(NSMutableArray *)returnAllEmptyPossibleComputerMoves:(NSArray *)rowOrColOfHumanMove{
+    NSMutableArray *emptyLabels = [[NSMutableArray alloc] init];
+    for (NSArray *rowOrCol in rowOrColOfHumanMove) {
+        for (UILabel *emptyLabel in rowOrCol) {
+            if (![emptyLabel.text isEqualToString:@"X"]) {
+                [emptyLabels addObject:emptyLabel];
+            }
+        }
+    }
+    return emptyLabels;
+}
+
+-(NSMutableArray *)findColumnOrRowOfLastMove{
+    NSMutableArray *arrayOfColsAndRows = [[NSMutableArray alloc]init];
+
+    for (NSArray *colOrRow in self.columnsAndRows) {
+        for (UILabel *label in colOrRow) {
+            if(CGRectEqualToRect(label.frame, self.humanMove.frame)){
+                [arrayOfColsAndRows addObject:colOrRow];
+            }
+        }
+    }
+
+    if (arrayOfColsAndRows.count ) {
+        return arrayOfColsAndRows;
+    }
+    return nil;
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
     [self.gameTimer invalidate];
     self.timerLabel.text = @"";
     self.labelOne.text = @"";
@@ -200,9 +267,6 @@
     [self setTimer];
 }
 
--(void)resetBoard{
-
-}
 
 -(IBAction) unwindFromSegue:(UIStoryboardSegue *)segue{
 
