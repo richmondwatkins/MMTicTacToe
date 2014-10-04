@@ -54,7 +54,7 @@
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
     
-    //    [self setTimer];
+        [self setTimer];
 }
 
 
@@ -64,8 +64,19 @@
 }
 
 -(void)runTimer:(NSTimer *)timer{
-    self.timeAmount -= 1;
+    if (self.timeAmount == 0) {
+        if ([self.whichPlayerLabel.text isEqualToString:@"X"]) {
+            self.whichPlayerLabel.text = @"O";
+        }else{
+            self.whichPlayerLabel.text = @"X";
+        }
+        [self.gameTimer invalidate];
+        [self resetGamePiece];
+        [self setTimer];
+    }
+
     self.timerLabel.text = [NSString stringWithFormat:@"%i", self.timeAmount];
+    self.timeAmount -= 1;
 }
 
 - (IBAction)onLabelTapped:(UITapGestureRecognizer *)userTap {
@@ -83,27 +94,28 @@
 }
 
 - (IBAction)dragGamePiece:(UIPanGestureRecognizer *)panGesture {
-    CGPoint point = [panGesture locationInView:self.view];
+    CGPoint point = [panGesture translationInView:self.view];
 
-    if(CGRectContainsPoint([self.whichPlayerLabel frame], point)){
-        self.whichPlayerLabel.center = point;
+    self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(point.x, point.y);
 
-        if (panGesture.state == UIGestureRecognizerStateEnded) {
-           UILabel *validMove =  [self checkForValidMove:point];
-            if (validMove) {
-                validMove.text = self.whichPlayerLabel.text;
-                [self nextMove:validMove];
-                [self whoWon];
-//                [self setTimer];
-            }else{
-                [UIView animateWithDuration:1.0 animations:^{
-                    self.whichPlayerLabel.center = self.gamePieceOriginalCenter;
-                }];
-            }
+    if (panGesture.state == UIGestureRecognizerStateEnded) {
+       UILabel *validMove =  [self checkForValidMove:[panGesture locationInView:self.view] ];
+        if (validMove) {
+            validMove.text = self.whichPlayerLabel.text;
+            [self nextMove:validMove];
+            [self whoWon];
+            [self.gameTimer invalidate];
+            [self setTimer];
         }
+        [self resetGamePiece];
     }
 }
 
+-(void)resetGamePiece{
+    [UIView animateWithDuration:1.0 animations:^{
+        self.whichPlayerLabel.transform = CGAffineTransformIdentity;
+    }];
+}
 
 -(UILabel *)findLabelUsingPoint: (CGPoint)point{
     for (NSString *cgRect in self.labelFrames){
@@ -131,8 +143,8 @@
             UILabel *temp2 = colOrRow[1];
             UILabel *temp3 = colOrRow[2];
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
+            [self.gameTimer invalidate];
             [alertView show];
-            [self resetBoard];
         }
     }
 
@@ -170,8 +182,9 @@
     return nil;
 }
 
-
--(void)resetBoard{
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    [self.gameTimer invalidate];
+    self.timerLabel.text = @"";
     self.labelOne.text = @"";
     self.labelTwo.text = @"";
     self.labelThree.text = @"";
@@ -184,6 +197,11 @@
 
     self.whichPlayerLabel.text = @"X";
     self.whichPlayerLabel.textColor = [UIColor blueColor];
+    [self setTimer];
+}
+
+-(void)resetBoard{
+
 }
 
 -(IBAction) unwindFromSegue:(UIStoryboardSegue *)segue{

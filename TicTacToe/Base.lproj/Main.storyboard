@@ -16,18 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="se4-uo-1g2">
-                                <rect key="frame" x="29" y="170" width="42" height="21"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="8" y="179" width="50" height="21"/>
-                                </variation>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u20-gu-YmL">
-                                <rect key="frame" x="100" y="170" width="42" height="21"/>
+                                <rect key="frame" x="96" y="138" width="69" height="45"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -37,8 +27,18 @@
                                     <rect key="frame" x="79" y="179" width="50" height="21"/>
                                 </variation>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="se4-uo-1g2">
+                                <rect key="frame" x="25" y="138" width="63" height="45"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="8" y="179" width="50" height="21"/>
+                                </variation>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a94-MU-zsu">
-                                <rect key="frame" x="168" y="170" width="42" height="21"/>
+                                <rect key="frame" x="180" y="138" width="69" height="45"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -49,7 +49,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vTg-F5-YrP">
-                                <rect key="frame" x="29" y="199" width="42" height="21"/>
+                                <rect key="frame" x="25" y="191" width="63" height="41"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -59,7 +59,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pWs-kH-cWj">
-                                <rect key="frame" x="29" y="228" width="42" height="21"/>
+                                <rect key="frame" x="25" y="240" width="63" height="42"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -69,7 +69,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C0G-2u-547">
-                                <rect key="frame" x="100" y="199" width="42" height="21"/>
+                                <rect key="frame" x="96" y="191" width="69" height="41"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -79,7 +79,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q3y-mT-OWS">
-                                <rect key="frame" x="168" y="199" width="42" height="21"/>
+                                <rect key="frame" x="180" y="191" width="69" height="41"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -89,7 +89,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ADe-05-Lou">
-                                <rect key="frame" x="100" y="228" width="42" height="21"/>
+                                <rect key="frame" x="96" y="240" width="69" height="42"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -99,7 +99,7 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQl-kp-pmZ">
-                                <rect key="frame" x="168" y="228" width="42" height="21"/>
+                                <rect key="frame" x="180" y="240" width="69" height="42"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -108,17 +108,22 @@
                                     <rect key="frame" x="147" y="237" width="50" height="21"/>
                                 </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Game Piece" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YZH-Rk-GAD">
-                                <rect key="frame" x="74" y="85" width="94" height="36"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Game Piece" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YZH-Rk-GAD">
+                                <rect key="frame" x="96" y="72" width="63" height="38"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
                                     <rect key="frame" x="53" y="92" width="94" height="36"/>
                                 </variation>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="GP9-w1-yOo" appends="YES" id="PHg-Zu-dfQ"/>
+                                </connections>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="10" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cyq-J4-q5a">
-                                <rect key="frame" x="111" y="289" width="20" height="21"/>
+                                <rect key="frame" x="107" y="301" width="20" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -128,7 +133,6 @@
                         <gestureRecognizers/>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="myk-Mk-Ux7" appends="YES" id="ZKY-zh-9XY"/>
-                            <outletCollection property="gestureRecognizers" destination="zD1-Sh-Tjw" appends="YES" id="1GE-e2-GcV"/>
                         </connections>
                     </view>
                     <navigationItem key="navigationItem" id="M0X-aF-35R">
@@ -158,9 +162,9 @@
                         <action selector="onLabelTapped:" destination="vXZ-lx-hvc" id="mgy-U0-66c"/>
                     </connections>
                 </tapGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="zD1-Sh-Tjw">
+                <panGestureRecognizer minimumNumberOfTouches="1" id="GP9-w1-yOo">
                     <connections>
-                        <action selector="dragGamePiece:" destination="vXZ-lx-hvc" id="NSs-1R-S7Y"/>
+                        <action selector="dragGamePiece:" destination="vXZ-lx-hvc" id="x2Z-mG-lIS"/>
                     </connections>
                 </panGestureRecognizer>
             </objects>
