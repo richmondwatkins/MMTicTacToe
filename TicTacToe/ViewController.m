@@ -36,6 +36,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.lastMove = @"X";
     self.whichPlayerLabel.text = @"X";
     self.whichPlayerLabel.textColor = [UIColor blueColor];
 
@@ -56,7 +57,7 @@
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
     
-        [self setTimer];
+    [self setTimer];
 }
 
 
@@ -194,7 +195,6 @@
             }
         }
     }
-
     return nil;
 }
 
@@ -202,7 +202,13 @@
 {
     NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
 
-    NSArray *allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+    NSArray *allEmptyPossMoves;
+
+    if (!columnOrRowOfLastMove) {
+       allEmptyPossMoves = [self findAllEmptyLabels];
+    }else{
+        allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+    }
 
     uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
 
@@ -237,6 +243,24 @@
         return arrayOfColsAndRows;
     }
     return nil;
+}
+
+-(NSMutableArray *)findAllEmptyLabels
+{
+    NSMutableArray *emptyLabels = [[NSMutableArray alloc]init];
+
+    for (UILabel *label in self.allLabels) {
+        if ([label.text isEqualToString:@" "]) {
+            [emptyLabels addObject:label];
+        }
+    }
+
+    if (emptyLabels.count) {
+        return emptyLabels;
+    }else{
+        return nil;
+    }
+
 }
 
 -(void)resetBoard
