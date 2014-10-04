@@ -70,9 +70,13 @@
 {
     if (self.timeAmount == 0){
         if ([self.whichPlayerLabel.text isEqualToString:@"X"]) {
+            self.lastMove = @"X";
             self.whichPlayerLabel.text = @"O";
+            self.whichPlayerLabel.textColor = [UIColor redColor];
+            [self computerMove];
         }else{
             self.whichPlayerLabel.text = @"X";
+            self.whichPlayerLabel.textColor = [UIColor blueColor];
         }
         [self.gameTimer invalidate];
         [self resetGamePiece];
@@ -91,11 +95,10 @@
     UILabel *tapInLabel = [self findLabelUsingPoint:point];
 
     if (tapInLabel) {
+        self.humanMove = tapInLabel;
+        NSLog(@"%@", tapInLabel);
         [self nextMove:tapInLabel];
     }
-
-    [self whoWon:tapInLabel];
-
 }
 
 - (IBAction)dragGamePiece:(UIPanGestureRecognizer *)panGesture
@@ -107,11 +110,8 @@
     if (panGesture.state == UIGestureRecognizerStateEnded) {
        UILabel *validMove =  [self checkForValidMove:[panGesture locationInView:self.view] ];
         if (validMove) {
-            validMove.text = self.whichPlayerLabel.text;
             self.humanMove = validMove;
-            [self whoWon:validMove];
-            [self.gameTimer invalidate];
-            [self setTimer];
+            [self nextMove:validMove];
         }
         [self resetGamePiece];
     }
@@ -154,14 +154,10 @@
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
             isWinner = YES;
             [alertView show];
-            [self.gameTimer invalidate];
             [self resetBoard];
         }
     }
 
-    if (!isWinner) {
-        [self nextMove:lastMovelabel];
-    }
 }
 
 -(void)nextMove:(UILabel *)movedToLabel
@@ -180,6 +176,10 @@
         self.whichPlayerLabel.text = @"X";
         self.whichPlayerLabel.textColor = [UIColor blueColor];
     }
+
+    [self.gameTimer invalidate];
+    [self setTimer];
+    [self whoWon:movedToLabel];
 
 }
 
@@ -207,11 +207,7 @@
     uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
 
     UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-    randomLabel.text = @"O";
-    [self whoWon:randomLabel];
-    [self.gameTimer invalidate];
-    [self setTimer];
-
+    [self nextMove:randomLabel];
 }
 
 -(NSMutableArray *)returnAllEmptyPossibleComputerMoves:(NSArray *)rowOrColOfHumanMove{
@@ -245,6 +241,7 @@
 
 -(void)resetBoard
 {
+    [self.gameTimer invalidate];
     self.timerLabel.text = @" ";
     self.labelOne.text = @" ";
     self.labelTwo.text = @" ";
