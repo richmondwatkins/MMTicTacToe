@@ -207,10 +207,10 @@
     if (![self isBoardFull]) {
         NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
         NSArray *allEmptyPossMoves;
-
         NSMutableArray *computerWinningMove = [self checkForWinningMove:@"O"];
-
         NSMutableArray *humanWinningMove = [self checkForWinningMove:@"X"];
+
+        UILabel *middle = [self isMiddleOpen];
 
         if (computerWinningMove) {
             [self nextMove:computerWinningMove[0]];
@@ -218,17 +218,23 @@
             if (humanWinningMove) {
                 [self nextMove:humanWinningMove[0]];
             }else{
-                if (!columnOrRowOfLastMove) {
-                    allEmptyPossMoves = [self findAllEmptyLabels];
-                    if (!allEmptyPossMoves) {
-                        [self alertFullBoard];
-                    }
+                if(middle){
+                    [self nextMove:middle];
                 }else{
-                    allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                    if (!columnOrRowOfLastMove) {
+                        allEmptyPossMoves = [self findAllEmptyLabels];
+                        if (!allEmptyPossMoves) {
+                            [self alertFullBoard];
+                        }
+                    }else{
+                        allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                    }
+                    uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+                    UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+                    [self nextMove:randomLabel];
+
                 }
-                uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-                UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-                [self nextMove:randomLabel];
+
             }
             
         }
@@ -237,6 +243,14 @@
         [self alertFullBoard];
     }
 
+}
+
+-(UILabel *)isMiddleOpen{
+    if ([self.labelFive.text isEqualToString:@" "]) {
+        return self.labelFive;
+    }else{
+        return nil;
+    }
 }
 
 -(NSMutableArray *)checkForWinningMove:(NSString *)playerToCheck{
@@ -273,39 +287,6 @@
     }
 }
 
--(NSMutableArray *)checkForWinningComputerMove{
-    NSMutableArray *winningMovesRowsOrCols = [[NSMutableArray alloc] init];
-    for (NSArray *rowOrCol in self.columnsAndRows) {
-        NSMutableArray *tempRowOrCol = [[NSMutableArray alloc] init];
-        for (UILabel *label in rowOrCol) {
-            if ([label.text isEqualToString:@"O"]) {
-
-                [tempRowOrCol addObject:label];
-            }
-        }
-        if (tempRowOrCol.count == 2) {
-
-            [winningMovesRowsOrCols addObject:rowOrCol];
-        }
-    }
-
-    NSMutableArray *winningMoves = [[NSMutableArray alloc] init];
-    if (winningMovesRowsOrCols) {
-        for (NSArray *moveArray in winningMovesRowsOrCols) {
-            for (UILabel *move in moveArray) {
-                if ([move.text isEqualToString:@" "]) {
-                    [winningMoves addObject:move];
-                }
-            }
-        }
-    }
-
-    if (winningMoves.count) {
-        return winningMoves;
-    }else{
-        return nil;
-    }
-}
 
 -(NSMutableArray *)returnAllEmptyPossibleComputerMoves:(NSArray *)rowOrColOfHumanMove{
     NSMutableArray *emptyLabels = [[NSMutableArray alloc] init];
