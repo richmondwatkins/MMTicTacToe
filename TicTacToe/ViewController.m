@@ -146,19 +146,22 @@
     alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", self.lastMove];
     [alertView addButtonWithTitle:@"Play Again!"];
 
+    BOOL foundWinner = false;
     NSString *lMove = [NSString stringWithFormat:@"%@", self.lastMove];
     for (NSArray *colOrRow in self.columnsAndRows) {
             UILabel *temp1 = colOrRow[0];
             UILabel *temp2 = colOrRow[1];
             UILabel *temp3 = colOrRow[2];
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
+            foundWinner = true;
             [alertView show];
         }
     }
 
-    if ([self.lastMove isEqualToString:@"X"]) {
-        [self computerMove];
+    if(!foundWinner && [self.lastMove isEqualToString:@"X"]){
+            [self computerMove];
     }
+
 
 }
 
