@@ -57,7 +57,7 @@
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
     
-    [self setTimer];
+//    [self setTimer];
 }
 
 
@@ -140,7 +140,6 @@
 
 -(void)whoWon:(UILabel *)lastMovelabel
 {
-    NSLog(@"%@", self.lastMove);
     UIAlertView *alertView = [[UIAlertView alloc]init];
     alertView.delegate = self;
     alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", self.lastMove];
@@ -153,6 +152,7 @@
             UILabel *temp2 = colOrRow[1];
             UILabel *temp3 = colOrRow[2];
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
+            [self.gameTimer invalidate];
             foundWinner = true;
             [alertView show];
         }
@@ -207,21 +207,62 @@
     if (![self isBoardFull]) {
         NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
         NSArray *allEmptyPossMoves;
-        if (!columnOrRowOfLastMove) {
-            allEmptyPossMoves = [self findAllEmptyLabels];
-            if (!allEmptyPossMoves) {
-                [self alertFullBoard];
-            }
+
+        NSMutableArray *winningMove = [self checkForWinningComputerMove];
+        if (winningMove) {
+            [self nextMove:winningMove[0]];
         }else{
-            allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+            if (!columnOrRowOfLastMove) {
+                allEmptyPossMoves = [self findAllEmptyLabels];
+                if (!allEmptyPossMoves) {
+                    [self alertFullBoard];
+                }
+            }else{
+                allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+            }
+            uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+            UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+            [self nextMove:randomLabel];
+
         }
-        uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-        UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-        [self nextMove:randomLabel];
     }else{
         [self alertFullBoard];
     }
 
+}
+
+-(NSMutableArray *)checkForWinningComputerMove{
+    NSMutableArray *winningMovesRowsOrCols = [[NSMutableArray alloc] init];
+    for (NSArray *rowOrCol in self.columnsAndRows) {
+        NSMutableArray *tempRowOrCol = [[NSMutableArray alloc] init];
+        for (UILabel *label in rowOrCol) {
+            if ([label.text isEqualToString:@"O"]) {
+
+                [tempRowOrCol addObject:label];
+            }
+        }
+        if (tempRowOrCol.count == 2) {
+
+            [winningMovesRowsOrCols addObject:rowOrCol];
+        }
+    }
+
+    NSMutableArray *winningMoves = [[NSMutableArray alloc] init];
+    if (winningMovesRowsOrCols) {
+        for (NSArray *moveArray in winningMovesRowsOrCols) {
+            for (UILabel *move in moveArray) {
+                if ([move.text isEqualToString:@" "]) {
+                    [winningMoves addObject:move];
+                }
+            }
+        }
+    }
+
+    if (winningMoves.count) {
+        return winningMoves;
+    }else{
+        return nil;
+    }
 }
 
 -(NSMutableArray *)returnAllEmptyPossibleComputerMoves:(NSArray *)rowOrColOfHumanMove{
