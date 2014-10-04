@@ -28,6 +28,7 @@
 @property CGPoint gamePieceOriginalCenter;
 @property NSArray *columnsAndRows;
 @property UILabel *humanMove;
+@property int moveNumber;
 
 @end
 
@@ -36,6 +37,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.moveNumber = 1;
+
     self.lastMove = @"X";
     self.whichPlayerLabel.text = @"X";
     self.whichPlayerLabel.textColor = [UIColor blueColor];
@@ -182,6 +185,7 @@
             self.whichPlayerLabel.textColor = [UIColor blueColor];
         }
 
+        self.moveNumber += 1;
         [self whoWon:movedToLabel];
         [self.gameTimer invalidate];
         [self setTimer];
@@ -212,33 +216,40 @@
 
         UILabel *middle = [self isMiddleOpen];
 
-        if (computerWinningMove) {
-            [self nextMove:computerWinningMove[0]];
+        NSArray *checkForTrap = [self checkForHumanCornerTrap];
+
+        if (checkForTrap) {
+            uint32_t rnd = arc4random_uniform([checkForTrap count]);
+            UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
+            [self nextMove:randomLabel];
         }else{
-            if (humanWinningMove) {
-                [self nextMove:humanWinningMove[0]];
+            if (computerWinningMove) {
+                [self nextMove:computerWinningMove[0]];
             }else{
-                if(middle){
-                    [self nextMove:middle];
+                if (humanWinningMove) {
+                    [self nextMove:humanWinningMove[0]];
                 }else{
-                    if (!columnOrRowOfLastMove) {
-                        allEmptyPossMoves = [self findAllEmptyLabels];
-                        if (!allEmptyPossMoves) {
-                            [self alertFullBoard];
-                        }
+                    if(middle){
+                        [self nextMove:middle];
                     }else{
-                        allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                        if (!columnOrRowOfLastMove) {
+                            allEmptyPossMoves = [self findAllEmptyLabels];
+                            if (!allEmptyPossMoves) {
+                                [self alertFullBoard];
+                            }
+                        }else{
+                            allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                        }
+                        uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+                        UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+                        [self nextMove:randomLabel];
+                        
                     }
-                    uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-                    UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-                    [self nextMove:randomLabel];
-
+                    
                 }
-
+                
             }
-            
         }
-
     }else{
         [self alertFullBoard];
     }
@@ -251,6 +262,20 @@
     }else{
         return nil;
     }
+}
+
+-(NSArray *)checkForHumanCornerTrap{
+    NSArray *correctMoves;
+    if (self.moveNumber == 4 && [self.labelFive.text isEqualToString:@"O"]) {
+        if ([self.labelOne.text isEqualToString:@"X"] && [self.labelNine.text isEqualToString:@"X"]) {
+            correctMoves = [[NSArray alloc]  initWithObjects:self.labelTwo,self.labelFour, self.labelSix, self.labelEight, nil];
+        }
+        if ([self.labelThree.text isEqualToString:@"X"] && [self.labelSeven.text isEqualToString:@"X"]) {
+            correctMoves = [[NSArray alloc]  initWithObjects:self.labelTwo,self.labelFour, self.labelSix, self.labelEight, nil];
+        }
+        return correctMoves;
+    }
+    return nil;
 }
 
 -(NSMutableArray *)checkForWinningMove:(NSString *)playerToCheck{
@@ -360,6 +385,7 @@
 
 -(void)resetBoard
 {
+    self.moveNumber = 1;
     self.timerLabel.text = @" ";
     self.labelOne.text = @" ";
     self.labelTwo.text = @" ";
