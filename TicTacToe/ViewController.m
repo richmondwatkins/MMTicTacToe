@@ -60,7 +60,7 @@
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
     
-//    [self setTimer];
+    [self setTimer];
 }
 
 
@@ -164,7 +164,6 @@
     if(!foundWinner && [self.lastMove isEqualToString:@"X"]){
             [self computerMove];
     }
-
 
 }
 
