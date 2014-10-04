@@ -153,13 +153,11 @@
             UILabel *temp3 = colOrRow[2];
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
             [alertView show];
-            [self resetBoard];
         }
     }
 
     if ([self.lastMove isEqualToString:@"X"]) {
         [self computerMove];
-
     }
 
 }
@@ -181,9 +179,9 @@
             self.whichPlayerLabel.textColor = [UIColor blueColor];
         }
 
+        [self whoWon:movedToLabel];
         [self.gameTimer invalidate];
         [self setTimer];
-        [self whoWon:movedToLabel];
 
 }
 
@@ -291,13 +289,10 @@
     alertView.title = @"It is a tie!";
     [alertView addButtonWithTitle:@"Play Again!"];
     [alertView show];
-    [self resetBoard];
-
 }
 
 -(void)resetBoard
 {
-    [self.gameTimer invalidate];
     self.timerLabel.text = @" ";
     self.labelOne.text = @" ";
     self.labelTwo.text = @" ";
@@ -317,6 +312,8 @@
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+    [self resetBoard];
+    [self.gameTimer invalidate];
     [self setTimer];
 
 }
