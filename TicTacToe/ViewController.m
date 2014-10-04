@@ -97,7 +97,6 @@
 
     if (tapInLabel) {
         self.humanMove = tapInLabel;
-        NSLog(@"%@", tapInLabel);
         [self nextMove:tapInLabel];
     }
 }
@@ -141,46 +140,50 @@
 
 -(void)whoWon:(UILabel *)lastMovelabel
 {
+    NSLog(@"%@", self.lastMove);
     UIAlertView *alertView = [[UIAlertView alloc]init];
     alertView.delegate = self;
-    alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", lastMovelabel.text];
+    alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", self.lastMove];
     [alertView addButtonWithTitle:@"Play Again!"];
 
-    BOOL isWinner = NO;
-    NSString *lMove = [NSString stringWithFormat:@"%@", lastMovelabel.text];
+    NSString *lMove = [NSString stringWithFormat:@"%@", self.lastMove];
     for (NSArray *colOrRow in self.columnsAndRows) {
             UILabel *temp1 = colOrRow[0];
             UILabel *temp2 = colOrRow[1];
             UILabel *temp3 = colOrRow[2];
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
-            isWinner = YES;
             [alertView show];
             [self resetBoard];
         }
+    }
+
+    if ([self.lastMove isEqualToString:@"X"]) {
+        [self computerMove];
+
     }
 
 }
 
 -(void)nextMove:(UILabel *)movedToLabel
 {
-    if([self.whichPlayerLabel.text isEqualToString:@"X"]){
-        movedToLabel.text = @"X";
-        movedToLabel.textColor = [UIColor blueColor];
-        self.lastMove = @"X";
-        self.whichPlayerLabel.text = @"O";
-        self.whichPlayerLabel.textColor = [UIColor redColor];
-        [self computerMove];
-    }else{
-        movedToLabel.text = @"O";
-        movedToLabel.textColor = [UIColor redColor];
-        self.lastMove = @"O";
-        self.whichPlayerLabel.text = @"X";
-        self.whichPlayerLabel.textColor = [UIColor blueColor];
-    }
 
-    [self.gameTimer invalidate];
-    [self setTimer];
-    [self whoWon:movedToLabel];
+        if([self.whichPlayerLabel.text isEqualToString:@"X"]){
+            movedToLabel.text = @"X";
+            movedToLabel.textColor = [UIColor blueColor];
+            self.lastMove = @"X";
+            self.whichPlayerLabel.text = @"O";
+            self.whichPlayerLabel.textColor = [UIColor redColor];
+        }else{
+            movedToLabel.text = @"O";
+            movedToLabel.textColor = [UIColor redColor];
+            self.lastMove = @"O";
+            self.whichPlayerLabel.text = @"X";
+            self.whichPlayerLabel.textColor = [UIColor blueColor];
+        }
+
+        [self.gameTimer invalidate];
+        [self setTimer];
+        [self whoWon:movedToLabel];
 
 }
 
@@ -200,20 +203,24 @@
 
 -(void)computerMove
 {
-    NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
-
-    NSArray *allEmptyPossMoves;
-
-    if (!columnOrRowOfLastMove) {
-       allEmptyPossMoves = [self findAllEmptyLabels];
+    if (![self isBoardFull]) {
+        NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
+        NSArray *allEmptyPossMoves;
+        if (!columnOrRowOfLastMove) {
+            allEmptyPossMoves = [self findAllEmptyLabels];
+            if (!allEmptyPossMoves) {
+                [self alertFullBoard];
+            }
+        }else{
+            allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+        }
+        uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+        UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+        [self nextMove:randomLabel];
     }else{
-        allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+        [self alertFullBoard];
     }
 
-    uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-
-    UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-    [self nextMove:randomLabel];
 }
 
 -(NSMutableArray *)returnAllEmptyPossibleComputerMoves:(NSArray *)rowOrColOfHumanMove{
@@ -257,9 +264,34 @@
 
     if (emptyLabels.count) {
         return emptyLabels;
-    }else{
-        return nil;
     }
+
+    return nil;
+}
+
+-(BOOL)isBoardFull{
+    NSMutableArray *fullLabels = [[NSMutableArray alloc]init];
+
+    for (UILabel *label in self.allLabels) {
+        if ([label.text isEqualToString:@"X"] || [label.text isEqualToString:@"O"]) {
+            [fullLabels addObject:label];
+        }
+    }
+
+    if (fullLabels.count == 9) {
+        return YES;
+    } else{
+        return NO;
+    }
+}
+
+-(void)alertFullBoard{
+    UIAlertView *alertView = [[UIAlertView alloc]init];
+    alertView.delegate = self;
+    alertView.title = @"It is a tie!";
+    [alertView addButtonWithTitle:@"Play Again!"];
+    [alertView show];
+    [self resetBoard];
 
 }
 
