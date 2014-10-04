@@ -94,7 +94,7 @@
         [self nextMove:tapInLabel];
     }
 
-   [self whoWon];
+    [self whoWon:tapInLabel];
 
 }
 
@@ -109,8 +109,7 @@
         if (validMove) {
             validMove.text = self.whichPlayerLabel.text;
             self.humanMove = validMove;
-            [self nextMove:validMove];
-            [self whoWon];
+            [self whoWon:validMove];
             [self.gameTimer invalidate];
             [self setTimer];
         }
@@ -139,26 +138,30 @@
     return nil;
 }
 
--(NSString *)whoWon
+-(void)whoWon:(UILabel *)lastMovelabel
 {
     UIAlertView *alertView = [[UIAlertView alloc]init];
     alertView.delegate = self;
-    alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", self.lastMove];
+    alertView.title = [NSString  stringWithFormat:@"%@ is the Winner!", lastMovelabel.text];
     [alertView addButtonWithTitle:@"Play Again!"];
 
-    NSString *lMove = [NSString stringWithFormat:@"%@", self.lastMove];
-
+    BOOL isWinner = NO;
+    NSString *lMove = [NSString stringWithFormat:@"%@", lastMovelabel.text];
     for (NSArray *colOrRow in self.columnsAndRows) {
             UILabel *temp1 = colOrRow[0];
             UILabel *temp2 = colOrRow[1];
             UILabel *temp3 = colOrRow[2];
         if([temp1.text isEqualToString:lMove] && [temp2.text isEqualToString:lMove] && [temp3.text isEqualToString:lMove]){
-            [self.gameTimer invalidate];
+            isWinner = YES;
             [alertView show];
+            [self.gameTimer invalidate];
+            [self resetBoard];
         }
     }
 
-    return nil;
+    if (!isWinner) {
+        [self nextMove:lastMovelabel];
+    }
 }
 
 -(void)nextMove:(UILabel *)movedToLabel
@@ -201,21 +204,13 @@
 
     NSArray *allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
 
-    NSLog(@"%@", allEmptyPossMoves);
-    
-//    NSMutableArray *emptyLabels = [[NSMutableArray alloc] init];
-//    for (UILabel *emptyLabel in columnOrRowOfLastMove) {
-//        if(!(CGRectEqualToRect(emptyLabel.frame, self.humanMove.frame))){
-//            [emptyLabels addObject:emptyLabel];
-//        }
-//    }
-//
-//        UILabel *computersMove = emptyLabels[0];
-//        computersMove.text = @"O";
-//        [self nextMove:computersMove];
-//        [self whoWon];
-//        [self.gameTimer invalidate];
-//        [self setTimer];
+    uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+
+    UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+    randomLabel.text = @"O";
+    [self whoWon:randomLabel];
+    [self.gameTimer invalidate];
+    [self setTimer];
 
 }
 
@@ -223,7 +218,7 @@
     NSMutableArray *emptyLabels = [[NSMutableArray alloc] init];
     for (NSArray *rowOrCol in rowOrColOfHumanMove) {
         for (UILabel *emptyLabel in rowOrCol) {
-            if (![emptyLabel.text isEqualToString:@"X"]) {
+            if ([emptyLabel.text isEqualToString:@" "]) {
                 [emptyLabels addObject:emptyLabel];
             }
         }
@@ -248,23 +243,29 @@
     return nil;
 }
 
--(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+-(void)resetBoard
 {
-    [self.gameTimer invalidate];
-    self.timerLabel.text = @"";
-    self.labelOne.text = @"";
-    self.labelTwo.text = @"";
-    self.labelThree.text = @"";
-    self.labelFour.text = @"";
-    self.labelFive.text = @"";
-    self.labelSix.text = @"";
-    self.labelSeven.text = @"";
-    self.labelEight.text = @"";
-    self.labelNine.text = @"";
+    self.timerLabel.text = @" ";
+    self.labelOne.text = @" ";
+    self.labelTwo.text = @" ";
+    self.labelThree.text = @" ";
+    self.labelFour.text = @" ";
+    self.labelFive.text = @" ";
+    self.labelSix.text = @" ";
+    self.labelSeven.text = @" ";
+    self.labelEight.text = @" ";
+    self.labelNine.text = @" ";
 
     self.whichPlayerLabel.text = @"X";
+    self.timerLabel.text = [NSString stringWithFormat:@"%i", 10];
     self.whichPlayerLabel.textColor = [UIColor blueColor];
+
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
     [self setTimer];
+
 }
 
 
