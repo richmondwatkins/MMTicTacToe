@@ -19,6 +19,14 @@
 @property (strong, nonatomic) IBOutlet UILabel *labelEight;
 @property (strong, nonatomic) IBOutlet UILabel *labelNine;
 @property (strong, nonatomic) IBOutlet UILabel *whichPlayerLabel;
+@property NSArray *rowOne;
+@property NSArray *rowTwo;
+@property NSArray *rowThree;
+@property NSArray *columnOne;
+@property NSArray *columnTwo;
+@property NSArray *columnThree;
+@property NSArray *diagonalLeft;
+@property NSArray *diagonalRight;
 @property NSString *lastMove;
 @property NSArray *labelFrames;
 @property NSArray *allLabels;
@@ -28,6 +36,7 @@
 @property CGPoint gamePieceOriginalCenter;
 @property NSArray *columnsAndRows;
 @property UILabel *humanMove;
+@property UILabel *twoHumanMovesAgo;
 @property int moveNumber;
 
 @end
@@ -47,16 +56,16 @@
 
     self.allLabels = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, self.labelFour, self.labelFive, self.labelSix, self.labelSeven, self.labelEight, self.labelNine, nil];
 
-    NSArray *rowOne = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, nil];
-    NSArray *rowTwo = [NSArray arrayWithObjects:self.labelFour, self.labelFive, self.labelSix, nil];
-    NSArray *rowThree = [NSArray arrayWithObjects:self.labelSeven, self.labelEight, self.labelNine, nil];
-    NSArray *columnOne = [NSArray arrayWithObjects:self.labelOne, self.labelFour, self.labelSeven, nil];
-    NSArray *columnTwo = [NSArray arrayWithObjects:self.labelTwo, self.labelFive, self.labelEight, nil];
-    NSArray *columnThree = [NSArray arrayWithObjects:self.labelThree, self.labelSix, self.labelNine, nil];
-    NSArray *diagonalLeft = [NSArray arrayWithObjects:self.labelOne, self.labelFive, self.labelNine, nil];
-    NSArray *diagonalRight = [NSArray arrayWithObjects:self.labelThree, self.labelFive, self.labelSeven, nil];
+    self.rowOne = [NSArray arrayWithObjects:self.labelOne, self.labelTwo, self.labelThree, nil];
+    self.rowTwo = [NSArray arrayWithObjects:self.labelFour, self.labelFive, self.labelSix, nil];
+    self.rowThree = [NSArray arrayWithObjects:self.labelSeven, self.labelEight, self.labelNine, nil];
+    self.columnOne = [NSArray arrayWithObjects:self.labelOne, self.labelFour, self.labelSeven, nil];
+    self.columnTwo = [NSArray arrayWithObjects:self.labelTwo, self.labelFive, self.labelEight, nil];
+    self.columnThree = [NSArray arrayWithObjects:self.labelThree, self.labelSix, self.labelNine, nil];
+    self.diagonalLeft = [NSArray arrayWithObjects:self.labelOne, self.labelFive, self.labelNine, nil];
+    self.diagonalRight = [NSArray arrayWithObjects:self.labelThree, self.labelFive, self.labelSeven, nil];
 
-    self.columnsAndRows = [NSArray arrayWithObjects:rowOne, rowTwo, rowThree, columnOne, columnTwo, columnThree, diagonalLeft, diagonalRight,  nil];
+    self.columnsAndRows = [NSArray arrayWithObjects:self.rowOne, self.rowTwo, self.rowThree, self.columnOne, self.columnTwo, self.columnThree, self.diagonalLeft, self.diagonalRight,  nil];
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
     
@@ -99,6 +108,7 @@
     UILabel *tapInLabel = [self findLabelUsingPoint:point];
 
     if (tapInLabel) {
+        self.twoHumanMovesAgo = self.humanMove;
         self.humanMove = tapInLabel;
         [self nextMove:tapInLabel];
     }
@@ -113,6 +123,7 @@
     if (panGesture.state == UIGestureRecognizerStateEnded) {
        UILabel *validMove =  [self checkForValidMove:[panGesture locationInView:self.view] ];
         if (validMove) {
+            self.twoHumanMovesAgo = self.humanMove;
             self.humanMove = validMove;
             [self nextMove:validMove];
         }
@@ -208,7 +219,7 @@
 -(void)computerMove
 {
     if (![self isBoardFull]) {
-        NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfLastMove];
+        NSArray *columnOrRowOfLastMove = [self findColumnOrRowOfMove:self.humanMove.frame];
         NSArray *allEmptyPossMoves;
         NSMutableArray *computerWinningMove = [self checkForWinningMove:@"O"];
         NSMutableArray *humanWinningMove = [self checkForWinningMove:@"X"];
@@ -240,10 +251,10 @@
                             UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
                             [self nextMove:randomLabel];
                         }else{
-                            if (computerWinningMove) {
+                            if (computerWinningMove.count) {
                                 [self nextMove:computerWinningMove[0]];
                             }else{
-                                if (humanWinningMove) {
+                                if (humanWinningMove != nil) {
                                     [self nextMove:humanWinningMove[0]];
                                 }else{
                                     if (self.moveNumber == 4 && [self.labelThree.text isEqualToString:@"X"]) {
@@ -283,7 +294,7 @@
 }
 
 -(UILabel *)isMiddleOpen{
-    if ([self.labelFive.text isEqualToString:@" "]) {
+    if ([self.labelFive.text isEqualToString:@""]) {
         return self.labelFive;
     }else{
         return nil;
@@ -325,14 +336,14 @@
     if (winningMovesRowsOrCols) {
         for (NSArray *moveArray in winningMovesRowsOrCols) {
             for (UILabel *move in moveArray) {
-                if ([move.text isEqualToString:@" "]) {
+                if ([move.text isEqualToString:@""]) {
                     [winningMoves addObject:move];
                 }
             }
         }
     }
 
-    if (winningMoves.count) {
+    if (winningMoves.count == 1) {
         return winningMoves;
     }else{
         return nil;
@@ -341,23 +352,90 @@
 
 
 -(NSMutableArray *)returnAllEmptyPossibleComputerMoves:(NSArray *)rowOrColOfHumanMove{
+    BOOL needBlockingMove = NO;
     NSMutableArray *emptyLabels = [[NSMutableArray alloc] init];
-    for (NSArray *rowOrCol in rowOrColOfHumanMove) {
-        for (UILabel *emptyLabel in rowOrCol) {
-            if ([emptyLabel.text isEqualToString:@" "]) {
-                [emptyLabels addObject:emptyLabel];
+    if (self.moveNumber == 4) {
+        NSArray *firstRowOrCol = [self findColumnOrRowOfMove:self.twoHumanMovesAgo.frame];
+        NSArray *secondRowOrCol = [self findColumnOrRowOfMove:self.humanMove.frame];
+        NSArray *intersectionArrays = [NSArray arrayWithObjects:firstRowOrCol, secondRowOrCol, nil];
+        for (NSArray *rowOrColArray in intersectionArrays) {
+            for (NSArray *rowOrCol in rowOrColArray) {
+                if ([rowOrCol isEqualToArray:self.rowOne] || [rowOrCol isEqualToArray:self.rowThree] || [rowOrCol isEqualToArray:self.columnOne] || [rowOrCol isEqualToArray:self.columnThree] ) {
+                    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+                    for (UILabel *tempLabel in rowOrCol) {
+                        if ([tempLabel.text isEqualToString:@"X"]) {
+                            [tempArray addObject:tempLabel];
+                        }
+                    }
+                    if (tempArray.count == 1) {
+                        needBlockingMove = YES;
+                    }else{
+                        needBlockingMove = NO;
+                    }
+                }
             }
         }
+
+        if (needBlockingMove) {
+            for (NSArray *rowOrCol in secondRowOrCol) {
+                if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelOne.text isEqualToString:@""]) {
+                    for (NSArray *rowOrCol in firstRowOrCol) {
+                        if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelOne.text isEqualToString:@""]) {
+                            NSLog(@"RiGHT HERE");
+                            [emptyLabels addObject:self.labelOne];
+                        }
+                    }
+                }
+            }
+            for (NSArray *rowOrCol in secondRowOrCol) {
+                if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelThree.text isEqualToString:@""]) {
+                    for (NSArray *rowOrCol in firstRowOrCol) {
+                        if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelThree.text isEqualToString:@""]) {
+                            [emptyLabels addObject:self.labelThree];
+                        }
+                    }
+                }
+            }
+            for (NSArray *rowOrCol in secondRowOrCol) {
+                if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelSeven.text isEqualToString:@""]) {
+                    for (NSArray *rowOrCol in firstRowOrCol) {
+                        if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelSeven.text isEqualToString:@""]) {
+                            [emptyLabels addObject:self.labelSeven];
+                        }
+                    }
+                }
+            }
+            for (NSArray *rowOrCol in secondRowOrCol) {
+                if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelNine.text isEqualToString:@""]) {
+                    for (NSArray *rowOrCol in firstRowOrCol) {
+                        if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelNine.text isEqualToString:@""]) {
+                            [emptyLabels addObject:self.labelNine];
+                        }
+                    }
+                }
+            }
+        }
+
+    }else{
+        for (NSArray *rowOrCol in rowOrColOfHumanMove) {
+            for (UILabel *emptyLabel in rowOrCol) {
+                if ([emptyLabel.text isEqualToString:@""]) {
+                    [emptyLabels addObject:emptyLabel];
+                }
+            }
+        }
+
     }
+
     return emptyLabels;
 }
 
--(NSMutableArray *)findColumnOrRowOfLastMove{
+-(NSMutableArray *)findColumnOrRowOfMove:(CGRect) moveFrame{
     NSMutableArray *arrayOfColsAndRows = [[NSMutableArray alloc]init];
 
     for (NSArray *colOrRow in self.columnsAndRows) {
         for (UILabel *label in colOrRow) {
-            if(CGRectEqualToRect(label.frame, self.humanMove.frame)){
+            if(CGRectEqualToRect(label.frame, moveFrame)){
                 [arrayOfColsAndRows addObject:colOrRow];
             }
         }
@@ -374,7 +452,7 @@
     NSMutableArray *emptyLabels = [[NSMutableArray alloc]init];
 
     for (UILabel *label in self.allLabels) {
-        if ([label.text isEqualToString:@" "]) {
+        if ([label.text isEqualToString:@""]) {
             [emptyLabels addObject:label];
         }
     }
@@ -413,16 +491,16 @@
 -(void)resetBoard
 {
     self.moveNumber = 1;
-    self.timerLabel.text = @" ";
-    self.labelOne.text = @" ";
-    self.labelTwo.text = @" ";
-    self.labelThree.text = @" ";
-    self.labelFour.text = @" ";
-    self.labelFive.text = @" ";
-    self.labelSix.text = @" ";
-    self.labelSeven.text = @" ";
-    self.labelEight.text = @" ";
-    self.labelNine.text = @" ";
+    self.timerLabel.text = @"";
+    self.labelOne.text = @"";
+    self.labelTwo.text = @"";
+    self.labelThree.text = @"";
+    self.labelFour.text = @"";
+    self.labelFive.text = @"";
+    self.labelSix.text = @"";
+    self.labelSeven.text = @"";
+    self.labelEight.text = @"";
+    self.labelNine.text = @"";
 
     self.whichPlayerLabel.text = @"X";
     self.timerLabel.text = [NSString stringWithFormat:@"%i", 10];
