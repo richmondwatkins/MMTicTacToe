@@ -38,7 +38,7 @@
 @property UILabel *humanMove;
 @property UILabel *twoHumanMovesAgo;
 @property int moveNumber;
-
+@property CGRect originalPosition;
 @end
 
 @implementation ViewController
@@ -65,10 +65,10 @@
     self.diagonalLeft = [NSArray arrayWithObjects:self.labelOne, self.labelFive, self.labelNine, nil];
     self.diagonalRight = [NSArray arrayWithObjects:self.labelThree, self.labelFive, self.labelSeven, nil];
 
+    self.originalPosition = CGRectMake(self.whichPlayerLabel.frame.origin.x, self.whichPlayerLabel.frame.origin.y, self.whichPlayerLabel.frame.size.width, self.whichPlayerLabel.frame.size.height);;
     self.columnsAndRows = [NSArray arrayWithObjects:self.rowOne, self.rowTwo, self.rowThree, self.columnOne, self.columnTwo, self.columnThree, self.diagonalLeft, self.diagonalRight,  nil];
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
-    
 //    [self setTimer];
 }
 
@@ -205,44 +205,23 @@
 }
 
 -(void)animatComputerMove:(UILabel *)compMove{
-//    self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(point.x, point.y);
-//    self.whichPlayerLabel.center = self.gamePieceOriginalCenter;
-//    self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(compMove.center.x, compMove.center.y);
 
-//    [UIView animateWithDuration:5.0
-//                     animations:^{
-//                         NSLog(@"%@", NSStringFromCGRect(self.whichPlayerLabel.frame));
-//                         NSLog(@"%@", NSStringFromCGRect(compMove.frame));
-////                         self.whichPlayerLabel.transform = CGAffineTransformIdentity;
-//                         compMove.center = self.whichPlayerLabel.center;
-//
-////                         self.whichPlayerLabel.frame = compMove.frame;
-//
-//
-//                     }
-//                     completion:^(BOOL finished){
-//                         if (finished) {
-//                             compMove.text = @"O";
-//                             compMove.textColor = [UIColor redColor];
-                             [self nextMove:compMove];
-//                         }
-//                     }];
+    [UIView animateWithDuration:1.0 animations:^{
+        self.whichPlayerLabel.frame = CGRectMake(self.whichPlayerLabel.frame.origin.x, self.whichPlayerLabel.frame.origin.y, self.whichPlayerLabel.frame.size.width, self.whichPlayerLabel.frame.size.height); // 200 is considered to be center
+        self.whichPlayerLabel.alpha = 1;
+    } completion:^(BOOL finished){
+        [UIView animateWithDuration:1.0 animations:^{
+            self.whichPlayerLabel.frame = CGRectMake(compMove.frame.origin.x, compMove.frame.origin.y, compMove.frame.size.width, compMove.frame.size.height); // 400 is considered to be bottom somewhere
+        }completion:^(BOOL finished){
+            compMove.text = @"O";
+            compMove.textColor = [UIColor redColor];
 
-    [UIView animateWithDuration:5.0 animations:^{
-//        CGRect frame =  self.whichPlayerLabel.frame;
-//        frame.origin.y= compMove.center.y;
-//        frame.origin.x= compMove.center.x;
-//        self.whichPlayerLabel.frame= frame;
-//                                 NSLog(@"%d", NSStringFromCGFloat(compMove.center.x));
-        NSStringFromCGFloat();
-                                NSLog(@"%d", NSStringFromCGFloat(compMove.center.y));
-
-
-//        frame.origin.x = self.whichPlayerLabel.center.x;
-//        frame.origin.y = self.whichPlayerLabel.center.y;
-//        self.whichPlayerLabel.frame = frame;
-    } completion:^(BOOL finished) {
-        //
+            [UIView animateWithDuration:1.0 animations:^{
+                self.whichPlayerLabel.frame = self.originalPosition;
+            }completion:^(BOOL finished){
+                [self nextMove:compMove];
+             }];
+        }];
     }];
 
 }
