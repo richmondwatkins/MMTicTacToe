@@ -214,11 +214,6 @@
 
         NSArray *checkForTrap = [self checkForHumanCornerTrap];
 
-        BOOL cornerTrap = NO;
-        if (self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]) {
-            cornerTrap = YES;
-        }
-
         if (self.moveNumber == 4 && [self.labelFive.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"]) {
             [self nextMove:self.labelOne];
 
