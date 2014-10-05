@@ -121,7 +121,7 @@
     self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(point.x, point.y);
 
     if (panGesture.state == UIGestureRecognizerStateEnded) {
-       UILabel *validMove =  [self checkForValidMove:[panGesture locationInView:self.view] ];
+       UILabel *validMove =  [self findLabelUsingPoint:[panGesture locationInView:self.view] ];
         if (validMove) {
             self.twoHumanMovesAgo = self.humanMove;
             self.humanMove = validMove;
@@ -136,20 +136,6 @@
     [UIView animateWithDuration:1.0 animations:^{
         self.whichPlayerLabel.transform = CGAffineTransformIdentity;
     }];
-}
-
--(UILabel *)findLabelUsingPoint: (CGPoint)point
-{
-    for (NSString *cgRect in self.labelFrames){
-        if(CGRectContainsPoint(CGRectFromString(cgRect), point)){
-            for (UILabel *label in self.allLabels) {
-                if(CGRectEqualToRect([label frame], CGRectFromString(cgRect))){
-                    return label;
-                }
-            }
-        }
-    }
-    return nil;
 }
 
 -(void)whoWon:(UILabel *)lastMovelabel
@@ -202,12 +188,12 @@
 
 }
 
--(UILabel *)checkForValidMove:(CGPoint)labelPosition
+-(UILabel *)findLabelUsingPoint:(CGPoint)labelPosition
 {
     for (NSString *cgRect in self.labelFrames){
         if(CGRectContainsPoint(CGRectFromString(cgRect), labelPosition)){
             for (UILabel *label in self.allLabels) {
-                if(CGRectEqualToRect([label frame], CGRectFromString(cgRect))){
+                if(CGRectEqualToRect([label frame], CGRectFromString(cgRect)) && [label.text isEqualToString:@""]){
                     return label;
                 }
             }
