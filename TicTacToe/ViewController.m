@@ -60,7 +60,7 @@
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
     
-    [self setTimer];
+//    [self setTimer];
 }
 
 
@@ -187,7 +187,7 @@
         self.moveNumber += 1;
         [self whoWon:movedToLabel];
         [self.gameTimer invalidate];
-        [self setTimer];
+//        [self setTimer];
 
 }
 
@@ -217,36 +217,63 @@
 
         NSArray *checkForTrap = [self checkForHumanCornerTrap];
 
-        if (checkForTrap) {
-            uint32_t rnd = arc4random_uniform([checkForTrap count]);
-            UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
-            [self nextMove:randomLabel];
+        BOOL cornerTrap = NO;
+        if (self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]) {
+            cornerTrap = YES;
+        }
+
+        if ([self.labelTwo.text isEqualToString:@"X"] && [self.labelSeven.text isEqualToString:@"X"] && self.moveNumber == 4) {
+            [self nextMove:self.labelFour];
         }else{
-            if (computerWinningMove) {
-                [self nextMove:computerWinningMove[0]];
+            if ([self.labelThree.text isEqualToString:@"X"] && [self.labelEight.text isEqualToString:@"X"] && self.moveNumber == 4) {
+                [self nextMove:self.labelSix];
             }else{
-                if (humanWinningMove) {
-                    [self nextMove:humanWinningMove[0]];
+                if ([self.labelFive.text isEqualToString:@"O"] && [self.labelSeven.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"] && self.moveNumber == 4) {
+                    [self nextMove:self.labelEight];
                 }else{
-                    if(middle){
-                        [self nextMove:middle];
+
+                    if (self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]) {
+                        [self nextMove:self.labelSeven];
                     }else{
-                        if (!columnOrRowOfLastMove) {
-                            allEmptyPossMoves = [self findAllEmptyLabels];
-                            if (!allEmptyPossMoves) {
-                                [self alertFullBoard];
-                            }
+                        if (checkForTrap) {
+                            uint32_t rnd = arc4random_uniform([checkForTrap count]);
+                            UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
+                            [self nextMove:randomLabel];
                         }else{
-                            allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                            if (computerWinningMove) {
+                                [self nextMove:computerWinningMove[0]];
+                            }else{
+                                if (humanWinningMove) {
+                                    [self nextMove:humanWinningMove[0]];
+                                }else{
+                                    if (self.moveNumber == 4 && [self.labelThree.text isEqualToString:@"X"]) {
+                                        NSLog(@"checker");
+                                        [self nextMove:self.labelOne];
+                                    }else{
+                                        if(middle){
+                                            [self nextMove:middle];
+                                        }else{
+                                            if (!columnOrRowOfLastMove) {
+                                                allEmptyPossMoves = [self findAllEmptyLabels];
+                                                if (!allEmptyPossMoves) {
+                                                    [self alertFullBoard];
+                                                }
+                                            }else{
+                                                allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                                            }
+                                            uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+                                            UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+                                            [self nextMove:randomLabel];
+
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                            }
                         }
-                        uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-                        UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-                        [self nextMove:randomLabel];
-                        
                     }
-                    
                 }
-                
             }
         }
     }else{
@@ -274,6 +301,7 @@
         }
         return correctMoves;
     }
+
     return nil;
 }
 
@@ -406,7 +434,7 @@
 {
     [self resetBoard];
     [self.gameTimer invalidate];
-    [self setTimer];
+//    [self setTimer];
 
 }
 
