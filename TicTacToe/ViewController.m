@@ -233,54 +233,40 @@
             cornerTrap = YES;
         }
 
-        if ([self.labelTwo.text isEqualToString:@"X"] && [self.labelSeven.text isEqualToString:@"X"] && self.moveNumber == 4) {
-            [self nextMove:self.labelFour];
+
+        if ([self.labelFive.text isEqualToString:@"O"] && [self.labelSeven.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"] && self.moveNumber == 4) {
+            [self nextMove:self.labelEight];
         }else{
-            if ([self.labelThree.text isEqualToString:@"X"] && [self.labelEight.text isEqualToString:@"X"] && self.moveNumber == 4) {
-                [self nextMove:self.labelSix];
+            if (self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]) {
+                [self nextMove:self.labelSeven];
             }else{
-                if ([self.labelFive.text isEqualToString:@"O"] && [self.labelSeven.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"] && self.moveNumber == 4) {
-                    [self nextMove:self.labelEight];
+                if (checkForTrap) {
+                    uint32_t rnd = arc4random_uniform([checkForTrap count]);
+                    UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
+                    [self nextMove:randomLabel];
                 }else{
-
-                    if (self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]) {
-                        [self nextMove:self.labelSeven];
+                    if (computerWinningMove.count) {
+                        [self nextMove:computerWinningMove[0]];
                     }else{
-                        if (checkForTrap) {
-                            uint32_t rnd = arc4random_uniform([checkForTrap count]);
-                            UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
-                            [self nextMove:randomLabel];
+                        if (humanWinningMove != nil) {
+                            [self nextMove:humanWinningMove[0]];
                         }else{
-                            if (computerWinningMove.count) {
-                                [self nextMove:computerWinningMove[0]];
-                            }else{
-                                if (humanWinningMove != nil) {
-                                    [self nextMove:humanWinningMove[0]];
-                                }else{
-                                    if (self.moveNumber == 4 && [self.labelThree.text isEqualToString:@"X"]) {
-                                        NSLog(@"checker");
-                                        [self nextMove:self.labelOne];
-                                    }else{
-                                        if(middle){
-                                            [self nextMove:middle];
-                                        }else{
-                                            if (!columnOrRowOfLastMove) {
-                                                allEmptyPossMoves = [self findAllEmptyLabels];
-                                                if (!allEmptyPossMoves) {
-                                                    [self alertFullBoard];
-                                                }
-                                            }else{
-                                                allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
-                                            }
-                                            uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-                                            UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-                                            [self nextMove:randomLabel];
 
-                                        }
-                                        
+                            if(middle){
+                                [self nextMove:middle];
+                            }else{
+                                if (!columnOrRowOfLastMove) {
+                                    allEmptyPossMoves = [self findAllEmptyLabels];
+                                    if (!allEmptyPossMoves) {
+                                        [self alertFullBoard];
                                     }
-                                    
+                                }else{
+                                    allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
                                 }
+                                uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+                                UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+                                [self nextMove:randomLabel];
+
                             }
                         }
                     }
@@ -375,13 +361,13 @@
                 }
             }
         }
-
+        BOOL columnRowIntersect = NO;
         if (needBlockingMove) {
             for (NSArray *rowOrCol in secondRowOrCol) {
                 if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelOne.text isEqualToString:@""]) {
                     for (NSArray *rowOrCol in firstRowOrCol) {
                         if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelOne.text isEqualToString:@""]) {
-                            NSLog(@"RiGHT HERE");
+                            columnRowIntersect = YES;
                             [emptyLabels addObject:self.labelOne];
                         }
                     }
@@ -391,6 +377,7 @@
                 if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelThree.text isEqualToString:@""]) {
                     for (NSArray *rowOrCol in firstRowOrCol) {
                         if (([rowOrCol isEqualToArray:self.rowOne] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelThree.text isEqualToString:@""]) {
+                            columnRowIntersect = YES;
                             [emptyLabels addObject:self.labelThree];
                         }
                     }
@@ -400,6 +387,7 @@
                 if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelSeven.text isEqualToString:@""]) {
                     for (NSArray *rowOrCol in firstRowOrCol) {
                         if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnOne]) && [self.labelSeven.text isEqualToString:@""]) {
+                            columnRowIntersect = YES;
                             [emptyLabels addObject:self.labelSeven];
                         }
                     }
@@ -409,11 +397,22 @@
                 if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelNine.text isEqualToString:@""]) {
                     for (NSArray *rowOrCol in firstRowOrCol) {
                         if (([rowOrCol isEqualToArray:self.rowThree] ||  [rowOrCol isEqualToArray:self.columnThree]) && [self.labelNine.text isEqualToString:@""]) {
+                            columnRowIntersect = YES;
                             [emptyLabels addObject:self.labelNine];
                         }
                     }
                 }
             }
+        }
+        if(!columnRowIntersect){
+            for (NSArray *rowOrCol in rowOrColOfHumanMove) {
+                for (UILabel *emptyLabel in rowOrCol) {
+                    if ([emptyLabel.text isEqualToString:@""]) {
+                        [emptyLabels addObject:emptyLabel];
+                    }
+                }
+            }
+            
         }
 
     }else{
