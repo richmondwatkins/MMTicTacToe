@@ -69,7 +69,7 @@
     self.columnsAndRows = [NSArray arrayWithObjects:self.rowOne, self.rowTwo, self.rowThree, self.columnOne, self.columnTwo, self.columnThree, self.diagonalLeft, self.diagonalRight,  nil];
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
-//    [self setTimer];
+    [self setTimer];
 }
 
 
@@ -127,7 +127,7 @@
         if (validMove) {
             validMove.text = @"X";
             validMove.textColor = [UIColor blueColor];
-            [UIView animateWithDuration:1.0
+            [UIView animateWithDuration:0.5
                                   delay:0.0f
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
@@ -149,7 +149,7 @@
 
 -(void)resetGamePiece
 {
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         self.whichPlayerLabel.transform = CGAffineTransformIdentity;
     }];
 }
@@ -190,8 +190,6 @@
             self.whichPlayerLabel.text = @"O";
             self.whichPlayerLabel.textColor = [UIColor redColor];
         }else{
-            movedToLabel.text = @"O";
-            movedToLabel.textColor = [UIColor redColor];
             self.lastMove = @"O";
             self.whichPlayerLabel.text = @"X";
             self.whichPlayerLabel.textColor = [UIColor blueColor];
@@ -200,23 +198,23 @@
         self.moveNumber += 1;
         [self whoWon:movedToLabel];
         [self.gameTimer invalidate];
-//        [self setTimer];
+        [self setTimer];
 
 }
 
 -(void)animatComputerMove:(UILabel *)compMove{
 
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         self.whichPlayerLabel.frame = CGRectMake(self.whichPlayerLabel.frame.origin.x, self.whichPlayerLabel.frame.origin.y, self.whichPlayerLabel.frame.size.width, self.whichPlayerLabel.frame.size.height); // 200 is considered to be center
         self.whichPlayerLabel.alpha = 1;
     } completion:^(BOOL finished){
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.whichPlayerLabel.frame = CGRectMake(compMove.frame.origin.x, compMove.frame.origin.y, compMove.frame.size.width, compMove.frame.size.height); // 400 is considered to be bottom somewhere
         }completion:^(BOOL finished){
             compMove.text = @"O";
             compMove.textColor = [UIColor redColor];
 
-            [UIView animateWithDuration:1.0 animations:^{
+            [UIView animateWithDuration:0.5 animations:^{
                 self.whichPlayerLabel.frame = self.originalPosition;
             }completion:^(BOOL finished){
                 [self nextMove:compMove];
@@ -522,7 +520,7 @@
 {
     [self resetBoard];
     [self.gameTimer invalidate];
-//    [self setTimer];
+    [self setTimer];
 
 }
 
