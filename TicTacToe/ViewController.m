@@ -109,6 +109,8 @@
 
     if (tapInLabel) {
         self.twoHumanMovesAgo = self.humanMove;
+        tapInLabel.text = @"X";
+        tapInLabel.textColor = [UIColor blueColor];
         self.humanMove = tapInLabel;
         [self nextMove:tapInLabel];
     }
@@ -123,11 +125,25 @@
     if (panGesture.state == UIGestureRecognizerStateEnded) {
        UILabel *validMove =  [self findLabelUsingPoint:[panGesture locationInView:self.view] ];
         if (validMove) {
-            self.twoHumanMovesAgo = self.humanMove;
-            self.humanMove = validMove;
-            [self nextMove:validMove];
+            validMove.text = @"X";
+            validMove.textColor = [UIColor blueColor];
+            [UIView animateWithDuration:1.0
+                                  delay:0.0f
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^{
+                                 self.whichPlayerLabel.transform = CGAffineTransformIdentity;
+                             }
+                             completion:^(BOOL finished){
+                                 if (finished) {
+                                     self.twoHumanMovesAgo = self.humanMove;
+                                     self.humanMove = validMove;
+                                     [self nextMove:validMove];
+                                 }
+                             }];
+
+
         }
-        [self resetGamePiece];
+//        [self resetGamePiece];
     }
 }
 
@@ -168,8 +184,8 @@
 {
 
         if([self.whichPlayerLabel.text isEqualToString:@"X"]){
-            movedToLabel.text = @"X";
-            movedToLabel.textColor = [UIColor blueColor];
+//            movedToLabel.text = @"X";
+//            movedToLabel.textColor = [UIColor blueColor];
             self.lastMove = @"X";
             self.whichPlayerLabel.text = @"O";
             self.whichPlayerLabel.textColor = [UIColor redColor];
@@ -185,6 +201,49 @@
         [self whoWon:movedToLabel];
         [self.gameTimer invalidate];
 //        [self setTimer];
+
+}
+
+-(void)animatComputerMove:(UILabel *)compMove{
+//    self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(point.x, point.y);
+//    self.whichPlayerLabel.center = self.gamePieceOriginalCenter;
+//    self.whichPlayerLabel.transform =CGAffineTransformMakeTranslation(compMove.center.x, compMove.center.y);
+
+//    [UIView animateWithDuration:5.0
+//                     animations:^{
+//                         NSLog(@"%@", NSStringFromCGRect(self.whichPlayerLabel.frame));
+//                         NSLog(@"%@", NSStringFromCGRect(compMove.frame));
+////                         self.whichPlayerLabel.transform = CGAffineTransformIdentity;
+//                         compMove.center = self.whichPlayerLabel.center;
+//
+////                         self.whichPlayerLabel.frame = compMove.frame;
+//
+//
+//                     }
+//                     completion:^(BOOL finished){
+//                         if (finished) {
+//                             compMove.text = @"O";
+//                             compMove.textColor = [UIColor redColor];
+                             [self nextMove:compMove];
+//                         }
+//                     }];
+
+    [UIView animateWithDuration:5.0 animations:^{
+//        CGRect frame =  self.whichPlayerLabel.frame;
+//        frame.origin.y= compMove.center.y;
+//        frame.origin.x= compMove.center.x;
+//        self.whichPlayerLabel.frame= frame;
+//                                 NSLog(@"%d", NSStringFromCGFloat(compMove.center.x));
+        NSStringFromCGFloat();
+                                NSLog(@"%d", NSStringFromCGFloat(compMove.center.y));
+
+
+//        frame.origin.x = self.whichPlayerLabel.center.x;
+//        frame.origin.y = self.whichPlayerLabel.center.y;
+//        self.whichPlayerLabel.frame = frame;
+    } completion:^(BOOL finished) {
+        //
+    }];
 
 }
 
@@ -215,33 +274,37 @@
         NSArray *checkForTrap = [self checkForHumanCornerTrap];
 
         if (self.moveNumber == 4 && [self.labelFive.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"]) {
-            [self nextMove:self.labelOne];
+            [self animatComputerMove:self.labelOne];
 
         }else if([self.labelFive.text isEqualToString:@"O"] && [self.labelSeven.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"] && self.moveNumber == 4){
-            [self nextMove:self.labelEight];
+            [self animatComputerMove:self.labelEight];
         }else if(self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]){
-            [self nextMove:self.labelSeven];
+            [self animatComputerMove:self.labelSeven];
         }else if(checkForTrap){
             uint32_t rnd = arc4random_uniform([checkForTrap count]);
             UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
-            [self nextMove:randomLabel];
+            [self animatComputerMove:randomLabel];
         }else if(computerWinningMove.count){
-            [self nextMove:computerWinningMove[0]];
+            [self animatComputerMove:computerWinningMove[0]];
         }else if(humanWinningMove){
-            [self nextMove:humanWinningMove[0]];
+            [self animatComputerMove:humanWinningMove[0]];
         }else if(middle){
-            [self nextMove:middle];
-        }else if(!columnOrRowOfLastMove){
-            allEmptyPossMoves = [self findAllEmptyLabels];
-            if (!allEmptyPossMoves) {
-                [self alertFullBoard];
-            }
+            [self animatComputerMove:middle];
         }else{
-            allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
-            uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-            UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-            [self nextMove:randomLabel];
+            if(!columnOrRowOfLastMove){
+            allEmptyPossMoves = [self findAllEmptyLabels];
+                if (!allEmptyPossMoves) {
+                    [self alertFullBoard];
+                }
+            }else{
+                allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
+                uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+                UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+                [self animatComputerMove:randomLabel];
+            }
+
         }
+
     }else{
         [self alertFullBoard];
     }
