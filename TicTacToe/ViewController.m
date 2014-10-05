@@ -19,6 +19,8 @@
 @property (strong, nonatomic) IBOutlet UILabel *labelEight;
 @property (strong, nonatomic) IBOutlet UILabel *labelNine;
 @property (strong, nonatomic) IBOutlet UILabel *whichPlayerLabel;
+@property (strong, nonatomic) IBOutlet UILabel *timerLabel;
+
 @property NSArray *rowOne;
 @property NSArray *rowTwo;
 @property NSArray *rowThree;
@@ -30,7 +32,6 @@
 @property NSString *lastMove;
 @property NSArray *labelFrames;
 @property NSArray *allLabels;
-@property (strong, nonatomic) IBOutlet UILabel *timerLabel;
 @property int timeAmount;
 @property NSTimer *gameTimer;
 @property CGPoint gamePieceOriginalCenter;
@@ -69,9 +70,37 @@
     self.columnsAndRows = [NSArray arrayWithObjects:self.rowOne, self.rowTwo, self.rowThree, self.columnOne, self.columnTwo, self.columnThree, self.diagonalLeft, self.diagonalRight,  nil];
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
+//    [self.view setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self setTimer];
+
+
+}
+- (void)updateLabelPreferredMaxLayoutWidthToCurrentWidth:(UILabel *)label
+{
+    label.preferredMaxLayoutWidth =
+    [label alignmentRectForFrame:label.frame].size.width;
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelOne];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelTwo];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelThree];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelFour];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelFive];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelSix];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelSeven];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelEight];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.labelNine];
+
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.whichPlayerLabel];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.timerLabel];
+
+
+    [self.view layoutSubviews];
+}
 
 -(void)setTimer
 {
