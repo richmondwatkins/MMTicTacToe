@@ -112,7 +112,7 @@
 
 -(void)runTimer:(NSTimer *)timer
 {
-    if (self.timeAmount == 0){
+    if (self.timeAmount == -1){
         if ([self.whichPlayerLabel.text isEqualToString:@"X"]) {
             self.lastMove = @"X";
             self.whichPlayerLabel.text = @"O";
@@ -306,11 +306,10 @@
                 }
             }else{
                 allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
-                uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
-                UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-                [self animateMove:randomLabel];
             }
-
+            uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
+            UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
+            [self animateMove:randomLabel];
         }
 
     }else{
