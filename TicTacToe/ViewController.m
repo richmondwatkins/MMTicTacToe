@@ -66,11 +66,13 @@
     self.diagonalLeft = [NSArray arrayWithObjects:self.labelOne, self.labelFive, self.labelNine, nil];
     self.diagonalRight = [NSArray arrayWithObjects:self.labelThree, self.labelFive, self.labelSeven, nil];
 
-    self.originalPosition = CGRectMake(self.whichPlayerLabel.frame.origin.x, self.whichPlayerLabel.frame.origin.y, self.whichPlayerLabel.frame.size.width, self.whichPlayerLabel.frame.size.height);;
+    self.originalPosition = CGRectMake(self.whichPlayerLabel.frame.origin.x, self.whichPlayerLabel.frame.origin.y, self.whichPlayerLabel.frame.size.width, self.whichPlayerLabel.frame.size.height);                                                
+
     self.columnsAndRows = [NSArray arrayWithObjects:self.rowOne, self.rowTwo, self.rowThree, self.columnOne, self.columnTwo, self.columnThree, self.diagonalLeft, self.diagonalRight,  nil];
 
     self.gamePieceOriginalCenter = self.whichPlayerLabel.center;
-//    [self.view setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+    self.whichPlayerLabel.backgroundColor = [UIColor clearColor];
     [self setTimer];
 
 
@@ -138,10 +140,8 @@
 
     if (tapInLabel) {
         self.twoHumanMovesAgo = self.humanMove;
-        tapInLabel.text = @"X";
-        tapInLabel.textColor = [UIColor blueColor];
         self.humanMove = tapInLabel;
-        [self nextMove:tapInLabel];
+        [self animateMove:tapInLabel];
     }
 }
 
@@ -172,7 +172,6 @@
 
 
         }
-//        [self resetGamePiece];
     }
 }
 
@@ -213,8 +212,6 @@
 {
 
         if([self.whichPlayerLabel.text isEqualToString:@"X"]){
-//            movedToLabel.text = @"X";
-//            movedToLabel.textColor = [UIColor blueColor];
             self.lastMove = @"X";
             self.whichPlayerLabel.text = @"O";
             self.whichPlayerLabel.textColor = [UIColor redColor];
@@ -231,7 +228,7 @@
 
 }
 
--(void)animatComputerMove:(UILabel *)compMove{
+-(void)animateMove:(UILabel *)compMove{
 
     [UIView animateWithDuration:0.5 animations:^{
         self.whichPlayerLabel.frame = CGRectMake(self.whichPlayerLabel.frame.origin.x, self.whichPlayerLabel.frame.origin.y, self.whichPlayerLabel.frame.size.width, self.whichPlayerLabel.frame.size.height); // 200 is considered to be center
@@ -240,8 +237,13 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.whichPlayerLabel.frame = CGRectMake(compMove.frame.origin.x, compMove.frame.origin.y, compMove.frame.size.width, compMove.frame.size.height); // 400 is considered to be bottom somewhere
         }completion:^(BOOL finished){
-            compMove.text = @"O";
-            compMove.textColor = [UIColor redColor];
+            if ([self.whichPlayerLabel.text isEqualToString:@"X"]) {
+                compMove.text = @"X";
+                compMove.textColor = [UIColor blueColor];
+            }else{
+                compMove.text = @"O";
+                compMove.textColor = [UIColor redColor];
+            }
 
             [UIView animateWithDuration:0.5 animations:^{
                 self.whichPlayerLabel.frame = self.originalPosition;
@@ -280,22 +282,22 @@
         NSArray *checkForTrap = [self checkForHumanCornerTrap];
 
         if (self.moveNumber == 4 && [self.labelFive.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"]) {
-            [self animatComputerMove:self.labelOne];
+            [self animateMove:self.labelOne];
 
         }else if([self.labelFive.text isEqualToString:@"O"] && [self.labelSeven.text isEqualToString:@"X"] && [self.labelThree.text isEqualToString:@"X"] && self.moveNumber == 4){
-            [self animatComputerMove:self.labelEight];
+            [self animateMove:self.labelEight];
         }else if(self.moveNumber == 2 && [self.labelFive.text isEqualToString:@"X"]){
-            [self animatComputerMove:self.labelSeven];
+            [self animateMove:self.labelSeven];
         }else if(checkForTrap){
             uint32_t rnd = arc4random_uniform([checkForTrap count]);
             UILabel *randomLabel = [checkForTrap objectAtIndex:rnd];
-            [self animatComputerMove:randomLabel];
+            [self animateMove:randomLabel];
         }else if(computerWinningMove.count){
-            [self animatComputerMove:computerWinningMove[0]];
+            [self animateMove:computerWinningMove[0]];
         }else if(humanWinningMove){
-            [self animatComputerMove:humanWinningMove[0]];
+            [self animateMove:humanWinningMove[0]];
         }else if(middle){
-            [self animatComputerMove:middle];
+            [self animateMove:middle];
         }else{
             if(!columnOrRowOfLastMove){
             allEmptyPossMoves = [self findAllEmptyLabels];
@@ -306,7 +308,7 @@
                 allEmptyPossMoves = [self returnAllEmptyPossibleComputerMoves:columnOrRowOfLastMove];
                 uint32_t rnd = arc4random_uniform([allEmptyPossMoves count]);
                 UILabel *randomLabel = [allEmptyPossMoves objectAtIndex:rnd];
-                [self animatComputerMove:randomLabel];
+                [self animateMove:randomLabel];
             }
 
         }
